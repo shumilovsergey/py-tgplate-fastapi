@@ -22,3 +22,11 @@ INLINE_APP = {
     ]
 }
 
+INLINE = {
+    'inline_keyboard': [
+        [
+            {'text': 'Магазинчик Шумилова', 'callback': 'testing calback' }
+        ]
+    ]
+}
+
