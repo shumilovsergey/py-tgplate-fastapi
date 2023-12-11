@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+import json
 
 
 #LOAD DOT ENV
@@ -22,10 +23,10 @@ INLINE_APP = {
     ]
 }
 
-INLINE = {
-    'inline_keyboard': [
+INLINE= {
+    "inline_keyboard" :  [
         [
-            {'text': 'Магазинчик Шумилова', 'callback': 'testing calback' }
+            {'text': '◀', 'callback_data': json.dumps({"menu":"menu"})}
         ]
     ]
 }
