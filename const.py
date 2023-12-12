@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from pydantic import BaseModel
 import os
 import json
 
@@ -23,11 +24,39 @@ INLINE_APP = {
     ]
 }
 
-INLINE= {
-    "inline_keyboard" :  [
-        [
-            {'text': '◀', 'callback_data': json.dumps({"menu":"menu"})}
-        ]
-    ]
-}
+#class
+# class Message(BaseModel):
+#     # id: str 
+#     message_id: str 
+#     first_name: str = None
+#     last_name: str = None
+#     username: str = None
+#     text: str = None
+#     photo: str = None
+#     voice: str = None
+#     video: str = None
+#     document: str = None
+#     audio: str = None
 
+
+from typing import Any
+from dataclasses import dataclass
+import json
+@dataclass
+class Message:
+    message_id: int
+    id: int
+    first_name: str
+    last_name: str
+    username: str
+    text: str
+
+    @staticmethod
+    def from_dict(obj: Any) -> 'Message':
+        _message_id = int(obj.get("message_id"))
+        _id = int(obj.get("id"))
+        _first_name = str(obj.get("first_name"))
+        _last_name = str(obj.get("last_name"))
+        _username = str(obj.get("username"))
+        _text = str(obj.get("text"))
+        return Message(_message_id, _id, _first_name, _last_name, _username, _text)

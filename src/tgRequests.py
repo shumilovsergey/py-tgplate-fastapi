@@ -1,20 +1,8 @@
 from const import TG_URL
 import json
 import requests
-from pydantic import BaseModel
 from pydantic import ValidationError
-
-from const import INLINE
-
-
-class Message(BaseModel):
-    chat_id: str 
-    message_id: str 
-    first_name: str = None
-    last_name: str = None
-    username: str = None
-    text: str = None
-    file_id: str = None
+from fastapi.encoders import jsonable_encoder
 
 def send_message(chat_id, text, reply_markup=None):
     url = f'{TG_URL}/sendMessage'
@@ -38,9 +26,25 @@ def send_file(chat_id, file_id, text=None, reply_markup=None):
     return response.json()
 
 def serializer(r):
+    def find_values_in_json(json_obj, keys_to_find, result_dict=None):
+        if result_dict is None:
+            result_dict = {}
+
+        if isinstance(json_obj, dict):
+            for key, value in json_obj.items():
+                if key in keys_to_find and key not in result_dict:
+                    result_dict[key] = value
+                elif isinstance(value, (dict, list)):
+                    find_values_in_json(value, keys_to_find, result_dict)
+        elif isinstance(json_obj, list):
+            for item in json_obj:
+                find_values_in_json(item, keys_to_find, result_dict)
+
+        return result_dict
+
     keys_to_find = [
         "message_id",
-        "chat_id",
+        "id",
         "text",
         "first_name",
         "last_name",
@@ -49,24 +53,23 @@ def serializer(r):
         "photo",
         "voice",
         "video",
-        "file_id"
+        "audio",
+        "document"
     ]
-    result_dict = find_values_in_json(r, keys_to_find) 
-    print(result_dict)
-    return
+    message = find_values_in_json(r, keys_to_find) 
 
-def find_values_in_json(json_obj, keys_to_find, result_dict=None):
-    if result_dict is None:
-        result_dict = {}
+    print(message)
+    return message
 
-    if isinstance(json_obj, dict):
-        for key, value in json_obj.items():
-            if key in keys_to_find and key not in result_dict:
-                result_dict[key] = value
-            elif isinstance(value, (dict, list)):
-                find_values_in_json(value, keys_to_find, result_dict)
-    elif isinstance(json_obj, list):
-        for item in json_obj:
-            find_values_in_json(item, keys_to_find, result_dict)
-
-    return result_dict
+def inline_keyboard_generator(buttons):
+    inline_keyboard = []
+    for key in buttons.keys():
+        button = [
+            {"text":key, "callback_data": buttons[key]}
+        ]
+        inline_keyboard.append(button)
+        
+    keyboard = {
+      "inline_keyboard": inline_keyboard
+    }
+    return keyboard
