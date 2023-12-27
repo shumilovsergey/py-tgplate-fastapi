@@ -24,21 +24,6 @@ INLINE_APP = {
     ]
 }
 
-#class
-# class Message(BaseModel):
-#     # id: str 
-#     message_id: str 
-#     first_name: str = None
-#     last_name: str = None
-#     username: str = None
-#     text: str = None
-#     photo: str = None
-#     voice: str = None
-#     video: str = None
-#     document: str = None
-#     audio: str = None
-
-
 from typing import Any
 from dataclasses import dataclass
 import json
