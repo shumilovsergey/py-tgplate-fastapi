@@ -17,3 +17,7 @@ def webhookSet():
         print(f"{response.status_code}. Response:")
         print(response.json())
     return
+
+def logs_create():
+    with open("logs.json", 'w') as json_file:
+        json.dump({}, json_file)
